@@ -7,6 +7,17 @@ This file tracks package-facing release notes for `openminion`.
 
 ## Unreleased
 
+- A new request that is too long to seed verbatim as the task objective (over the
+  12,000-character `TASK_CONTEXT_MAX_CHARS` bound, with no model-supplied
+  `task_update`) now gets its own clarify decision instead of the generic
+  `invalid_task_context_update` restate question: reason code
+  `task_context_capacity_exceeded`, a `brain.task_context.rejected` event with that
+  reason, and a question that states the request's length and the task-context limit
+  for a verbatim seed. The bound, the task state left by the rejection and every other
+  task-update validation reason are unchanged; nothing is truncated. Carrying the
+  reason to response metadata and handling it before SDK output coercion are separate,
+  held work (Refs #804).
+
 - `import_omx` and `export_omx` now confine table payload paths inside `omx_dir`
   (normalizing Windows separators while rejecting `..` escapes, absolute paths, and
   external symlinks), prepare quoted table/column SQL identifiers (`_quote_ident`),
